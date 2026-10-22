@@ -1,8 +1,8 @@
-import { clearCanvas, zoomIn, zoomOut, resetZoom } from "../core/canvas";
+import { clearCanvas, isDrawing, zoomIn, zoomOut, resetZoom } from "../core/canvas";
 import { exportAsPNG } from "../core/export";
+import { undo, redo } from "../core/history";
 
 // TODO: implement actual dropdown menus instead of direct action on click
-// TODO: implement Edit > Undo / Redo (needs an undo history stack)
 
 export function initMenuBar(): void {
   const menuItems = document.querySelectorAll<HTMLButtonElement>(".menu-item");
@@ -13,6 +13,8 @@ export function initMenuBar(): void {
       handleMenuAction(menu);
     });
   }
+
+  document.addEventListener("keydown", onKeyDown);
 
   const viewMenu = document.getElementById("view-menu");
   if (!viewMenu) return;
@@ -27,6 +29,16 @@ export function initMenuBar(): void {
   document.addEventListener("click", (e) => {
     if (!(e.target as Element).closest(".menu-group")) viewMenu.hidden = true;
   });
+}
+
+function onKeyDown(e: KeyboardEvent): void {
+  if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== "z") return;
+  e.preventDefault();
+  if (e.shiftKey) {
+    handleMenuAction("redo");
+  } else {
+    handleMenuAction("undo");
+  }
 }
 
 function handleViewAction(action: string | undefined): void {
@@ -52,6 +64,13 @@ function handleMenuAction(menu: string | undefined): void {
     case "edit":
       // For now, clicking Edit clears the canvas
       clearCanvas();
+      break;
+    case "undo":
+      // Ignore while a stroke is in progress, it would be drawn over the restored image
+      if (!isDrawing()) undo();
+      break;
+    case "redo":
+      if (!isDrawing()) redo();
       break;
     case "view": {
       const viewMenu = document.getElementById("view-menu");
