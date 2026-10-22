@@ -7,6 +7,7 @@ export type ToolType =
   | "rectangle"
   | "ellipse"
   | "eyedropper"
+  | "selection"
   | "text";
 
 export interface Point {

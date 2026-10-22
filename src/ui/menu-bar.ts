@@ -1,5 +1,6 @@
 import { clearCanvas, isDrawing } from "../core/canvas";
 import { exportAsPNG } from "../core/export";
+import { dropSelection } from "../tools/selection";
 import { undo, redo } from "../core/history";
 
 // TODO: implement actual dropdown menus instead of direct action on click
@@ -34,15 +35,24 @@ function handleMenuAction(menu: string | undefined): void {
       exportAsPNG();
       break;
     case "edit":
-      // For now, clicking Edit clears the canvas
+      // For now, clicking Edit clears the canvas. Drop any floating selection
+      // first so its saved background cannot bring the cleared pixels back.
+      dropSelection();
       clearCanvas();
       break;
     case "undo":
-      // Ignore while a stroke is in progress, it would be drawn over the restored image
-      if (!isDrawing()) undo();
+      // Ignore while a stroke is in progress, it would be drawn over the restored image.
+      // Drop any floating selection so its saved background cannot overwrite the restored image.
+      if (!isDrawing()) {
+        dropSelection();
+        undo();
+      }
       break;
     case "redo":
-      if (!isDrawing()) redo();
+      if (!isDrawing()) {
+        dropSelection();
+        redo();
+      }
       break;
     case "view":
       // TODO: zoom controls

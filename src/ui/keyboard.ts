@@ -4,7 +4,7 @@ import { clearCanvas } from "../core/canvas";
 import { exportAsPNG } from "../core/export";
 
 // TODO: Ctrl+Z / Ctrl+Shift+Z for undo/redo (needs an undo history stack, #1)
-// TODO: Ctrl+A select all, and Delete clearing only the selection (needs a selection tool, #7)
+// TODO: Ctrl+A select all
 
 const TOOL_HOTKEYS: Record<string, ToolType> = {
   p: "pencil",
@@ -22,7 +22,8 @@ export function initKeyboard(): void {
 }
 
 function onKeyDown(e: KeyboardEvent): void {
-  if (isTypingTarget(e.target)) return;
+  // The selection tool handles its own Delete and clipboard keys first
+  if (e.defaultPrevented || isTypingTarget(e.target)) return;
 
   const key = e.key.toLowerCase();
 
