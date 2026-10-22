@@ -82,7 +82,7 @@ function onKeyDown(e: KeyboardEvent, ctx: CanvasRenderingContext2D): void {
   const key = e.key.toLowerCase();
   const ctrl = e.ctrlKey || e.metaKey;
 
-  if (ctrl && key === "c" && selection) {
+  if (ctrl && key === "c" && selection && selection.w > 0 && selection.h > 0) {
     e.preventDefault();
     clipboard = floating ?? ctx.getImageData(selection.x, selection.y, selection.w, selection.h);
   } else if (ctrl && key === "v" && clipboard) {
@@ -120,7 +120,7 @@ function lift(ctx: CanvasRenderingContext2D, rect: Rect, state: AppState): void 
 }
 
 // The floating pixels are already drawn on the canvas, so dropping just forgets them
-function dropSelection(): void {
+export function dropSelection(): void {
   selection = null;
   floating = null;
   base = null;

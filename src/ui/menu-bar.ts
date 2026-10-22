@@ -1,5 +1,6 @@
 import { clearCanvas } from "../core/canvas";
 import { exportAsPNG } from "../core/export";
+import { dropSelection } from "../tools/selection";
 
 // TODO: implement actual dropdown menus instead of direct action on click
 // TODO: implement Edit > Undo / Redo (needs an undo history stack)
@@ -22,7 +23,9 @@ function handleMenuAction(menu: string | undefined): void {
       exportAsPNG();
       break;
     case "edit":
-      // For now, clicking Edit clears the canvas
+      // For now, clicking Edit clears the canvas. Drop any floating selection
+      // first so its saved background cannot bring the cleared pixels back.
+      dropSelection();
       clearCanvas();
       break;
     case "view":
