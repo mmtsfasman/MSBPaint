@@ -21,6 +21,7 @@ Then open http://localhost:5173.
 - Rectangle — click and drag to draw a rectangle outline
 - Ellipse — click and drag to draw an ellipse outline
 - Eyedropper — pick a colour from the canvas
+- Text — click to place text, pick a size, press Enter or click away to stamp it
 
 ## Controls
 
