@@ -8,6 +8,7 @@ import { lineTool } from "./line";
 import { rectangleTool } from "./rectangle";
 import { ellipseTool } from "./ellipse";
 import { eyedropperTool } from "./eyedropper";
+import { selectionTool } from "./selection";
 
 const tools: Map<ToolType, DrawTool> = new Map();
 
@@ -21,6 +22,7 @@ export function registerAllTools(): void {
     rectangleTool,
     ellipseTool,
     eyedropperTool,
+    selectionTool,
   ];
 
   for (const tool of allTools) {
