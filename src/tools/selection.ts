@@ -1,5 +1,6 @@
 import { DrawTool, Point, AppState } from "../core/types";
 import { state, subscribe } from "../core/state";
+import { saveSnapshot } from "../core/history";
 
 interface Rect {
   x: number;
@@ -97,6 +98,7 @@ function onKeyDown(e: KeyboardEvent, ctx: CanvasRenderingContext2D): void {
       ctx.fillRect(selection.x, selection.y, selection.w, selection.h);
     }
     dropSelection();
+    saveSnapshot();
   }
 }
 
@@ -108,6 +110,7 @@ function paste(ctx: CanvasRenderingContext2D, image: ImageData): void {
   selection = { x: 0, y: 0, w: image.width, h: image.height };
   ctx.putImageData(floating, selection.x, selection.y);
   updateMarquee();
+  saveSnapshot();
 }
 
 // Cuts the selected pixels out, leaving the secondary colour behind

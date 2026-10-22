@@ -22,6 +22,7 @@ Then open http://localhost:5173.
 - Ellipse — click and drag to draw an ellipse outline
 - Eyedropper — pick a colour from the canvas
 - Select — drag to select a region, drag inside it to move it, Ctrl+C / Ctrl+V to copy and paste, Delete to clear it to the secondary colour (on a moved or pasted selection, Delete removes the floating pixels and leaves what was underneath)
+- Text — click to place text, pick a size, press Enter or click away to stamp it
 
 ## Controls
 
@@ -29,6 +30,13 @@ Then open http://localhost:5173.
 - **Right click** on a colour swatch to set secondary colour
 - **File** menu exports as PNG
 - **Edit** menu clears the canvas
+- **Undo** / **Redo** menu items, or **Ctrl+Z** / **Ctrl+Shift+Z**, step through the last 50 canvas states
+
+## Keyboard shortcuts
+
+- **P** pencil, **B** brush, **E** eraser, **G** fill bucket, **L** line, **R** rectangle, **O** ellipse, **I** eyedropper
+- **Ctrl+S** (or **Cmd+S**) exports as PNG
+- **Delete** clears the canvas
 
 ## Project structure
 

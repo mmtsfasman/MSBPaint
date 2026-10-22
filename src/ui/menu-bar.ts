@@ -1,9 +1,9 @@
-import { clearCanvas } from "../core/canvas";
+import { clearCanvas, isDrawing } from "../core/canvas";
 import { exportAsPNG } from "../core/export";
 import { dropSelection } from "../tools/selection";
+import { undo, redo } from "../core/history";
 
 // TODO: implement actual dropdown menus instead of direct action on click
-// TODO: implement Edit > Undo / Redo (needs an undo history stack)
 
 export function initMenuBar(): void {
   const menuItems = document.querySelectorAll<HTMLButtonElement>(".menu-item");
@@ -13,6 +13,18 @@ export function initMenuBar(): void {
       const menu = item.dataset.menu;
       handleMenuAction(menu);
     });
+  }
+
+  document.addEventListener("keydown", onKeyDown);
+}
+
+function onKeyDown(e: KeyboardEvent): void {
+  if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== "z") return;
+  e.preventDefault();
+  if (e.shiftKey) {
+    handleMenuAction("redo");
+  } else {
+    handleMenuAction("undo");
   }
 }
 
@@ -27,6 +39,20 @@ function handleMenuAction(menu: string | undefined): void {
       // first so its saved background cannot bring the cleared pixels back.
       dropSelection();
       clearCanvas();
+      break;
+    case "undo":
+      // Ignore while a stroke is in progress, it would be drawn over the restored image.
+      // Drop any floating selection so its saved background cannot overwrite the restored image.
+      if (!isDrawing()) {
+        dropSelection();
+        undo();
+      }
+      break;
+    case "redo":
+      if (!isDrawing()) {
+        dropSelection();
+        redo();
+      }
       break;
     case "view":
       // TODO: zoom controls

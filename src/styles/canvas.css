@@ -39,3 +39,23 @@
     background-position: 8px 0, -8px 100%, 0 -8px, 100% 8px;
   }
 }
+
+.text-overlay {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.text-overlay-input {
+  padding: 0;
+  border: 0;
+  outline: 1px dashed #000;
+  background: transparent;
+  line-height: 1;
+  min-width: 1ch;
+}
+
+.text-overlay-size {
+  font-size: 11px;
+}
