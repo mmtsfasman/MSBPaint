@@ -29,6 +29,12 @@ Then open http://localhost:5173.
 - **File** menu exports as PNG
 - **Edit** menu clears the canvas
 
+## Keyboard shortcuts
+
+- **P** pencil, **B** brush, **E** eraser, **G** fill bucket, **L** line, **R** rectangle, **O** ellipse, **I** eyedropper
+- **Ctrl+S** (or **Cmd+S**) exports as PNG
+- **Delete** clears the canvas
+
 ## Project structure
 
 ```
