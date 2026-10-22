@@ -12,9 +12,31 @@
   box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #404040;
   background: #fff;
   overflow: hidden;
+  position: relative;
 }
 
 #paint-canvas {
   cursor: crosshair;
   transform-origin: 0 0;
+}
+
+.text-overlay {
+  position: absolute;
+  transform-origin: 0 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.text-overlay-input {
+  padding: 0;
+  border: 0;
+  outline: 1px dashed #000;
+  background: transparent;
+  line-height: 1;
+  min-width: 1ch;
+}
+
+.text-overlay-size {
+  font-size: 11px;
 }
