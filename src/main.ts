@@ -4,6 +4,7 @@ import { initToolbar } from "./ui/toolbar";
 import { initColourPalette } from "./ui/colour-palette";
 import { initStatusBar } from "./ui/status-bar";
 import { initMenuBar } from "./ui/menu-bar";
+import { initKeyboard } from "./ui/keyboard";
 
 function boot(): void {
   registerAllTools();
@@ -12,6 +13,7 @@ function boot(): void {
   initColourPalette();
   initStatusBar();
   initMenuBar();
+  initKeyboard();
 }
 
 if (document.readyState === "loading") {
