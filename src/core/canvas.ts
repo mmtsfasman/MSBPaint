@@ -1,6 +1,7 @@
 import { state } from "./state";
 import { Point } from "./types";
 import { getActiveTool } from "../tools/registry";
+import { saveSnapshot } from "./history";
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
@@ -16,6 +17,7 @@ export function initCanvas(): void {
   // Fill with white
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  saveSnapshot();
 
   canvas.addEventListener("pointerdown", onPointerDown);
   canvas.addEventListener("pointermove", onPointerMove);
@@ -54,6 +56,8 @@ function onPointerUp(e: PointerEvent): void {
   const point = getCanvasPoint(e);
   const tool = getActiveTool();
   tool.onPointerUp(ctx, point, state);
+  // The eyedropper only reads pixels, so it has nothing to undo
+  if (tool.name !== "eyedropper") saveSnapshot();
 }
 
 function updateStatusCoords(point: Point): void {
@@ -69,7 +73,12 @@ export function getContext(): CanvasRenderingContext2D {
   return ctx;
 }
 
+export function isDrawing(): boolean {
+  return drawing;
+}
+
 export function clearCanvas(): void {
   ctx.fillStyle = state.secondaryColour;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  saveSnapshot();
 }
