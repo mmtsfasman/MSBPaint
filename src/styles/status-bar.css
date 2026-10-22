@@ -10,7 +10,8 @@
 
 .status-coords,
 .status-dimensions,
-.status-tool {
+.status-tool,
+.status-zoom {
   padding: 1px 6px;
   border: 1px inset #c0c0c0;
   min-width: 60px;

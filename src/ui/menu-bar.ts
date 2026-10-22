@@ -1,4 +1,4 @@
-import { clearCanvas } from "../core/canvas";
+import { clearCanvas, zoomIn, zoomOut, resetZoom } from "../core/canvas";
 import { exportAsPNG } from "../core/export";
 
 // TODO: implement actual dropdown menus instead of direct action on click
@@ -13,6 +13,34 @@ export function initMenuBar(): void {
       handleMenuAction(menu);
     });
   }
+
+  const viewMenu = document.getElementById("view-menu");
+  if (!viewMenu) return;
+
+  for (const item of viewMenu.querySelectorAll<HTMLButtonElement>(".menu-dropdown-item")) {
+    item.addEventListener("click", () => {
+      viewMenu.hidden = true;
+      handleViewAction(item.dataset.action);
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (!(e.target as Element).closest(".menu-group")) viewMenu.hidden = true;
+  });
+}
+
+function handleViewAction(action: string | undefined): void {
+  switch (action) {
+    case "zoom-in":
+      zoomIn();
+      break;
+    case "zoom-out":
+      zoomOut();
+      break;
+    case "zoom-reset":
+      resetZoom();
+      break;
+  }
 }
 
 function handleMenuAction(menu: string | undefined): void {
@@ -25,9 +53,11 @@ function handleMenuAction(menu: string | undefined): void {
       // For now, clicking Edit clears the canvas
       clearCanvas();
       break;
-    case "view":
-      // TODO: zoom controls
+    case "view": {
+      const viewMenu = document.getElementById("view-menu");
+      if (viewMenu) viewMenu.hidden = !viewMenu.hidden;
       break;
+    }
     case "help":
       alert("MSBPaint v0.1.0\n\nA very serious paint application.");
       break;

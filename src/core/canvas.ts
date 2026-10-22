@@ -1,10 +1,12 @@
-import { state } from "./state";
+import { state, subscribe, setZoom } from "./state";
 import { Point } from "./types";
 import { getActiveTool } from "../tools/registry";
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
 let drawing = false;
+
+const ZOOM_LEVELS = [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8];
 
 export function initCanvas(): void {
   canvas = document.getElementById("paint-canvas") as HTMLCanvasElement;
@@ -21,13 +23,51 @@ export function initCanvas(): void {
   canvas.addEventListener("pointermove", onPointerMove);
   canvas.addEventListener("pointerup", onPointerUp);
   canvas.addEventListener("pointerleave", onPointerUp);
+
+  const area = document.querySelector<HTMLElement>(".canvas-area");
+  area?.addEventListener("wheel", onWheel, { passive: false });
+
+  applyZoom();
+  subscribe(applyZoom);
+}
+
+// The canvas is scaled with a CSS transform, which does not affect layout,
+// so the wrapper is sized explicitly to keep the scroll area correct.
+function applyZoom(): void {
+  canvas.style.transform = `scale(${state.zoom})`;
+  const wrapper = document.getElementById("canvas-wrapper");
+  if (wrapper) {
+    wrapper.style.width = `${canvas.width * state.zoom + 2}px`;
+    wrapper.style.height = `${canvas.height * state.zoom + 2}px`;
+  }
+}
+
+function onWheel(e: WheelEvent): void {
+  if (!e.ctrlKey) return;
+  e.preventDefault();
+  if (e.deltaY < 0) zoomIn();
+  else if (e.deltaY > 0) zoomOut();
+}
+
+export function zoomIn(): void {
+  const next = ZOOM_LEVELS.find((z) => z > state.zoom);
+  if (next !== undefined) setZoom(next);
+}
+
+export function zoomOut(): void {
+  const next = [...ZOOM_LEVELS].reverse().find((z) => z < state.zoom);
+  if (next !== undefined) setZoom(next);
+}
+
+export function resetZoom(): void {
+  setZoom(1);
 }
 
 function getCanvasPoint(e: PointerEvent): Point {
   const rect = canvas.getBoundingClientRect();
   return {
-    x: Math.floor(e.clientX - rect.left),
-    y: Math.floor(e.clientY - rect.top),
+    x: Math.floor((e.clientX - rect.left) / state.zoom),
+    y: Math.floor((e.clientY - rect.top) / state.zoom),
   };
 }
 

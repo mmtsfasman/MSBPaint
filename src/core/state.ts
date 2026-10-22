@@ -11,6 +11,7 @@ export const state: AppState = {
   brushSize: 2,
   canvasWidth: 800,
   canvasHeight: 600,
+  zoom: 1,
 };
 
 export function subscribe(fn: Listener): void {
@@ -34,6 +35,11 @@ export function setSecondaryColour(colour: string): void {
 
 export function setBrushSize(size: number): void {
   state.brushSize = size;
+  notify();
+}
+
+export function setZoom(zoom: number): void {
+  state.zoom = zoom;
   notify();
 }
 
