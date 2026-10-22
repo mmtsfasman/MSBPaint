@@ -11,11 +11,13 @@
   border: 1px solid #808080;
   box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #404040;
   background: #fff;
+  overflow: hidden;
   position: relative;
 }
 
 #paint-canvas {
   cursor: crosshair;
+  transform-origin: 0 0;
 }
 
 /* Marching ants border around the active selection */
@@ -42,6 +44,7 @@
 
 .text-overlay {
   position: absolute;
+  transform-origin: 0 0;
   display: flex;
   align-items: flex-start;
   gap: 4px;

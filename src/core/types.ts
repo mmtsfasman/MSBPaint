@@ -22,6 +22,7 @@ export interface AppState {
   brushSize: number;
   canvasWidth: number;
   canvasHeight: number;
+  zoom: number;
 }
 
 export interface DrawTool {

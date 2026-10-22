@@ -1,4 +1,4 @@
-import { clearCanvas, isDrawing } from "../core/canvas";
+import { clearCanvas, isDrawing, zoomIn, zoomOut, resetZoom } from "../core/canvas";
 import { exportAsPNG } from "../core/export";
 import { dropSelection } from "../tools/selection";
 import { undo, redo } from "../core/history";
@@ -16,6 +16,20 @@ export function initMenuBar(): void {
   }
 
   document.addEventListener("keydown", onKeyDown);
+
+  const viewMenu = document.getElementById("view-menu");
+  if (!viewMenu) return;
+
+  for (const item of viewMenu.querySelectorAll<HTMLButtonElement>(".menu-dropdown-item")) {
+    item.addEventListener("click", () => {
+      viewMenu.hidden = true;
+      handleViewAction(item.dataset.action);
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (!(e.target as Element).closest(".menu-group")) viewMenu.hidden = true;
+  });
 }
 
 function onKeyDown(e: KeyboardEvent): void {
@@ -25,6 +39,20 @@ function onKeyDown(e: KeyboardEvent): void {
     handleMenuAction("redo");
   } else {
     handleMenuAction("undo");
+  }
+}
+
+function handleViewAction(action: string | undefined): void {
+  switch (action) {
+    case "zoom-in":
+      zoomIn();
+      break;
+    case "zoom-out":
+      zoomOut();
+      break;
+    case "zoom-reset":
+      resetZoom();
+      break;
   }
 }
 
@@ -54,9 +82,11 @@ function handleMenuAction(menu: string | undefined): void {
         redo();
       }
       break;
-    case "view":
-      // TODO: zoom controls
+    case "view": {
+      const viewMenu = document.getElementById("view-menu");
+      if (viewMenu) viewMenu.hidden = !viewMenu.hidden;
       break;
+    }
     case "help":
       alert("MSBPaint v0.1.0\n\nA very serious paint application.");
       break;

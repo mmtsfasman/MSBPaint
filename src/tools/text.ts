@@ -50,8 +50,11 @@ function createOverlay(
 ): TextOverlay {
   const container = document.createElement("div");
   container.className = "text-overlay";
-  container.style.left = `${point.x}px`;
-  container.style.top = `${point.y}px`;
+  // The canvas is scaled with a CSS transform, so match it to keep the
+  // overlay over the pixel it will be drawn at
+  container.style.left = `${point.x * state.zoom}px`;
+  container.style.top = `${point.y * state.zoom}px`;
+  container.style.transform = `scale(${state.zoom})`;
 
   const input = document.createElement("input");
   input.type = "text";

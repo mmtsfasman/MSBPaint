@@ -18,7 +18,14 @@
       <button class="menu-item" data-menu="edit">Edit</button>
       <button class="menu-item" data-menu="undo" title="Ctrl+Z">Undo</button>
       <button class="menu-item" data-menu="redo" title="Ctrl+Shift+Z">Redo</button>
-      <button class="menu-item" data-menu="view">View</button>
+      <div class="menu-group">
+        <button class="menu-item" data-menu="view">View</button>
+        <div class="menu-dropdown" id="view-menu" hidden>
+          <button class="menu-dropdown-item" data-action="zoom-in">Zoom In</button>
+          <button class="menu-dropdown-item" data-action="zoom-out">Zoom Out</button>
+          <button class="menu-dropdown-item" data-action="zoom-reset">Reset Zoom</button>
+        </div>
+      </div>
       <button class="menu-item" data-menu="help">Help</button>
     </header>
 
@@ -38,6 +45,7 @@
         <span class="status-coords" id="status-coords"></span>
         <span class="status-dimensions" id="status-dimensions"></span>
         <span class="status-tool" id="status-tool"></span>
+        <span class="status-zoom" id="status-zoom"></span>
       </div>
     </footer>
   </div>
