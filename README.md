@@ -28,6 +28,8 @@ Then open http://localhost:5173.
 - **Right click** on a colour swatch to set secondary colour
 - **File** menu exports as PNG
 - **Edit** menu clears the canvas
+- **View** menu zooms in, zooms out or resets zoom (the zoom level is shown in the status bar)
+- **Ctrl + scroll wheel** over the canvas zooms in and out
 
 ## Keyboard shortcuts
 
