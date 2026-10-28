@@ -28,6 +28,7 @@ Then open http://localhost:5173.
 
 - **Left click** on a colour swatch to set primary colour
 - **Right click** on a colour swatch to set secondary colour
+- **Right drag** on the canvas draws with the secondary colour (the eyedropper picks into the secondary colour)
 - **File** menu exports as PNG
 - **Edit** menu clears the canvas
 - **Undo** / **Redo** menu items, or **Ctrl+Z** / **Ctrl+Shift+Z**, step through the last 50 canvas states
