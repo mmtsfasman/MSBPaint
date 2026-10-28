@@ -28,6 +28,7 @@ Then open http://localhost:5173.
 
 - **Left click** on a colour swatch to set primary colour
 - **Right click** on a colour swatch to set secondary colour
+- **Right drag** on the canvas draws with the secondary colour (the eyedropper picks into the secondary colour)
 - Click a menu (**File**, **Edit**, **View**, **Help**) to open its dropdown; click away or press **Escape** to close it
 - **File** menu: New, Save as PNG, Save as JPEG
 - **Edit** menu: Undo, Redo, Clear canvas. **Undo** / **Redo**, or **Ctrl+Z** / **Ctrl+Shift+Z**, step through the last 50 canvas states

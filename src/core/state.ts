@@ -1,4 +1,4 @@
-import { AppState, ToolType } from "./types";
+import { AppState, DrawButton, ToolType } from "./types";
 
 type Listener = () => void;
 
@@ -13,6 +13,10 @@ export const state: AppState = {
   canvasHeight: 600,
   zoom: 1,
 };
+
+export function drawColour(state: AppState, button: DrawButton): string {
+  return button === "secondary" ? state.secondaryColour : state.primaryColour;
+}
 
 export function subscribe(fn: Listener): void {
   listeners.push(fn);
