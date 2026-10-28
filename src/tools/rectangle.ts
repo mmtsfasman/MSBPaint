@@ -28,19 +28,24 @@ export const rectangleTool: DrawTool = {
   },
 };
 
-// TODO: support filled rectangles (outline + fill, fill only)
 function drawRect(
   ctx: CanvasRenderingContext2D,
   from: Point,
   to: Point,
   state: AppState
 ): void {
-  ctx.strokeStyle = state.primaryColour;
-  ctx.lineWidth = state.brushSize;
-  ctx.strokeRect(
-    from.x,
-    from.y,
-    to.x - from.x,
-    to.y - from.y
-  );
+  const x = from.x;
+  const y = from.y;
+  const w = to.x - from.x;
+  const h = to.y - from.y;
+
+  if (state.shapeFillMode !== "outline") {
+    ctx.fillStyle = state.secondaryColour;
+    ctx.fillRect(x, y, w, h);
+  }
+  if (state.shapeFillMode !== "fill") {
+    ctx.strokeStyle = state.primaryColour;
+    ctx.lineWidth = state.brushSize;
+    ctx.strokeRect(x, y, w, h);
+  }
 }

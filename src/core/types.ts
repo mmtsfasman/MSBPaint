@@ -10,6 +10,8 @@ export type ToolType =
   | "selection"
   | "text";
 
+export type ShapeFillMode = "outline" | "outline-fill" | "fill";
+
 export interface Point {
   x: number;
   y: number;
@@ -20,6 +22,7 @@ export interface AppState {
   primaryColour: string;
   secondaryColour: string;
   brushSize: number;
+  shapeFillMode: ShapeFillMode;
   canvasWidth: number;
   canvasHeight: number;
   zoom: number;

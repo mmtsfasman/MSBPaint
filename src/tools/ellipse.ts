@@ -28,7 +28,6 @@ export const ellipseTool: DrawTool = {
   },
 };
 
-// TODO: support filled ellipses
 function drawEllipse(
   ctx: CanvasRenderingContext2D,
   from: Point,
@@ -40,9 +39,15 @@ function drawEllipse(
   const rx = Math.abs(to.x - from.x) / 2;
   const ry = Math.abs(to.y - from.y) / 2;
 
-  ctx.strokeStyle = state.primaryColour;
-  ctx.lineWidth = state.brushSize;
   ctx.beginPath();
   ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-  ctx.stroke();
+  if (state.shapeFillMode !== "outline") {
+    ctx.fillStyle = state.secondaryColour;
+    ctx.fill();
+  }
+  if (state.shapeFillMode !== "fill") {
+    ctx.strokeStyle = state.primaryColour;
+    ctx.lineWidth = state.brushSize;
+    ctx.stroke();
+  }
 }

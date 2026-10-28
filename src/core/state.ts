@@ -1,4 +1,4 @@
-import { AppState, ToolType } from "./types";
+import { AppState, ShapeFillMode, ToolType } from "./types";
 
 type Listener = () => void;
 
@@ -9,6 +9,7 @@ export const state: AppState = {
   primaryColour: "#000000",
   secondaryColour: "#ffffff",
   brushSize: 2,
+  shapeFillMode: "outline",
   canvasWidth: 800,
   canvasHeight: 600,
   zoom: 1,
@@ -35,6 +36,11 @@ export function setSecondaryColour(colour: string): void {
 
 export function setBrushSize(size: number): void {
   state.brushSize = size;
+  notify();
+}
+
+export function setShapeFillMode(mode: ShapeFillMode): void {
+  state.shapeFillMode = mode;
   notify();
 }
 
