@@ -1,4 +1,5 @@
-import { DrawTool, Point, AppState } from "../core/types";
+import { DrawTool, Point, AppState, DrawButton } from "../core/types";
+import { drawColour } from "../core/state";
 
 let lastPoint: Point | null = null;
 
@@ -7,15 +8,15 @@ export const pencilTool: DrawTool = {
   label: "Pencil",
   icon: "✏️",
 
-  onPointerDown(ctx: CanvasRenderingContext2D, point: Point, state: AppState): void {
+  onPointerDown(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void {
     lastPoint = point;
-    ctx.fillStyle = state.primaryColour;
+    ctx.fillStyle = drawColour(state, button);
     ctx.fillRect(point.x, point.y, 1, 1);
   },
 
-  onPointerMove(ctx: CanvasRenderingContext2D, point: Point, state: AppState): void {
+  onPointerMove(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void {
     if (!lastPoint) return;
-    ctx.strokeStyle = state.primaryColour;
+    ctx.strokeStyle = drawColour(state, button);
     ctx.lineWidth = 1;
     ctx.lineCap = "round";
     ctx.beginPath();

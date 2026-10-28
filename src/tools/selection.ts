@@ -1,4 +1,4 @@
-import { DrawTool, Point, AppState } from "../core/types";
+import { DrawTool, Point, AppState, DrawButton } from "../core/types";
 import { state, subscribe } from "../core/state";
 import { saveSnapshot } from "../core/history";
 
@@ -53,8 +53,8 @@ export const selectionTool: DrawTool = {
     }
   },
 
-  onPointerUp(ctx: CanvasRenderingContext2D, point: Point): void {
-    selectionTool.onPointerMove(ctx, point, state);
+  onPointerUp(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void {
+    selectionTool.onPointerMove(ctx, point, state, button);
     if (mode === "select" && selection && (selection.w === 0 || selection.h === 0)) {
       dropSelection();
     }

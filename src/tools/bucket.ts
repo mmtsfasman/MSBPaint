@@ -1,4 +1,5 @@
-import { DrawTool, Point, AppState } from "../core/types";
+import { DrawTool, Point, AppState, DrawButton } from "../core/types";
+import { drawColour } from "../core/state";
 
 function hexToRgb(hex: string): [number, number, number] {
   const n = parseInt(hex.slice(1), 16);
@@ -22,7 +23,7 @@ export const bucketTool: DrawTool = {
   label: "Fill",
   icon: "🪣",
 
-  onPointerDown(ctx: CanvasRenderingContext2D, point: Point, state: AppState): void {
+  onPointerDown(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void {
     const { width, height } = ctx.canvas;
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
@@ -33,7 +34,7 @@ export const bucketTool: DrawTool = {
       data[startIdx + 1],
       data[startIdx + 2],
     ];
-    const fillColour = hexToRgb(state.primaryColour);
+    const fillColour = hexToRgb(drawColour(state, button));
 
     if (
       targetColour[0] === fillColour[0] &&

@@ -1,11 +1,12 @@
 import { state, subscribe, setZoom } from "./state";
-import { Point } from "./types";
+import { DrawButton, Point } from "./types";
 import { getActiveTool } from "../tools/registry";
 import { saveSnapshot } from "./history";
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
 let drawing = false;
+let button: DrawButton = "primary";
 
 const ZOOM_LEVELS = [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8];
 
@@ -25,6 +26,8 @@ export function initCanvas(): void {
   canvas.addEventListener("pointermove", onPointerMove);
   canvas.addEventListener("pointerup", onPointerUp);
   canvas.addEventListener("pointerleave", onPointerUp);
+  // Right-click draws with the secondary colour, so the browser menu must not open
+  canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
   const area = document.querySelector<HTMLElement>(".canvas-area");
   area?.addEventListener("wheel", onWheel, { passive: false });
@@ -74,11 +77,14 @@ function getCanvasPoint(e: PointerEvent): Point {
 }
 
 function onPointerDown(e: PointerEvent): void {
+  // Only the left and right buttons draw, and a second button can't join a stroke
+  if (drawing || (e.button !== 0 && e.button !== 2)) return;
+  button = e.button === 2 ? "secondary" : "primary";
   drawing = true;
   canvas.setPointerCapture(e.pointerId);
   const point = getCanvasPoint(e);
   const tool = getActiveTool();
-  tool.onPointerDown(ctx, point, state);
+  tool.onPointerDown(ctx, point, state, button);
 }
 
 function onPointerMove(e: PointerEvent): void {
@@ -87,7 +93,7 @@ function onPointerMove(e: PointerEvent): void {
 
   if (!drawing) return;
   const tool = getActiveTool();
-  tool.onPointerMove(ctx, point, state);
+  tool.onPointerMove(ctx, point, state, button);
 }
 
 function onPointerUp(e: PointerEvent): void {
@@ -95,7 +101,7 @@ function onPointerUp(e: PointerEvent): void {
   drawing = false;
   const point = getCanvasPoint(e);
   const tool = getActiveTool();
-  tool.onPointerUp(ctx, point, state);
+  tool.onPointerUp(ctx, point, state, button);
   // The eyedropper only reads pixels, so it has nothing to undo
   if (tool.name !== "eyedropper") saveSnapshot();
 }
