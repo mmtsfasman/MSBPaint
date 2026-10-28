@@ -10,23 +10,41 @@
   <link rel="stylesheet" href="/src/styles/canvas.css" />
   <link rel="stylesheet" href="/src/styles/colour-palette.css" />
   <link rel="stylesheet" href="/src/styles/status-bar.css" />
+  <link rel="stylesheet" href="/src/styles/menu-dropdown.css" />
 </head>
 <body>
   <div id="app">
     <header class="menu-bar">
-      <button class="menu-item" data-menu="file">File</button>
-      <button class="menu-item" data-menu="edit">Edit</button>
-      <button class="menu-item" data-menu="undo" title="Ctrl+Z">Undo</button>
-      <button class="menu-item" data-menu="redo" title="Ctrl+Shift+Z">Redo</button>
       <div class="menu-group">
-        <button class="menu-item" data-menu="view">View</button>
-        <div class="menu-dropdown" id="view-menu" hidden>
+        <button class="menu-item" data-menu="file" aria-haspopup="true" aria-expanded="false">File</button>
+        <div class="menu-dropdown" hidden>
+          <button class="menu-dropdown-item" data-action="new">New</button>
+          <button class="menu-dropdown-item" data-action="save-png" title="Ctrl+S">Save as PNG</button>
+          <button class="menu-dropdown-item" data-action="save-jpeg">Save as JPEG</button>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button class="menu-item" data-menu="edit" aria-haspopup="true" aria-expanded="false">Edit</button>
+        <div class="menu-dropdown" hidden>
+          <button class="menu-dropdown-item" data-action="undo" title="Ctrl+Z">Undo</button>
+          <button class="menu-dropdown-item" data-action="redo" title="Ctrl+Shift+Z">Redo</button>
+          <button class="menu-dropdown-item" data-action="clear">Clear Canvas</button>
+        </div>
+      </div>
+      <div class="menu-group">
+        <button class="menu-item" data-menu="view" aria-haspopup="true" aria-expanded="false">View</button>
+        <div class="menu-dropdown" hidden>
           <button class="menu-dropdown-item" data-action="zoom-in">Zoom In</button>
           <button class="menu-dropdown-item" data-action="zoom-out">Zoom Out</button>
           <button class="menu-dropdown-item" data-action="zoom-reset">Reset Zoom</button>
         </div>
       </div>
-      <button class="menu-item" data-menu="help">Help</button>
+      <div class="menu-group">
+        <button class="menu-item" data-menu="help" aria-haspopup="true" aria-expanded="false">Help</button>
+        <div class="menu-dropdown" hidden>
+          <button class="menu-dropdown-item" data-action="about">About</button>
+        </div>
+      </div>
     </header>
 
     <div class="workspace">
