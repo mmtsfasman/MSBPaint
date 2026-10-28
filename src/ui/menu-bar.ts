@@ -1,4 +1,5 @@
-import { clearCanvas, isDrawing, zoomIn, zoomOut, resetZoom } from "../core/canvas";
+import { clearCanvas, isDrawing, zoomIn, zoomOut, resetZoom, resizeCanvas } from "../core/canvas";
+import { state } from "../core/state";
 import { exportAsPNG } from "../core/export";
 import { dropSelection } from "../tools/selection";
 import { undo, redo } from "../core/history";
@@ -17,19 +18,62 @@ export function initMenuBar(): void {
 
   document.addEventListener("keydown", onKeyDown);
 
-  const viewMenu = document.getElementById("view-menu");
-  if (!viewMenu) return;
+  initDropdown("view-menu", handleViewAction);
+  initDropdown("image-menu", handleImageAction);
+  initAttributesDialog();
+}
 
-  for (const item of viewMenu.querySelectorAll<HTMLButtonElement>(".menu-dropdown-item")) {
+function initDropdown(id: string, onAction: (action: string | undefined) => void): void {
+  const menu = document.getElementById(id);
+  if (!menu) return;
+
+  for (const item of menu.querySelectorAll<HTMLButtonElement>(".menu-dropdown-item")) {
     item.addEventListener("click", () => {
-      viewMenu.hidden = true;
-      handleViewAction(item.dataset.action);
+      menu.hidden = true;
+      onAction(item.dataset.action);
     });
   }
 
+  // Closes on a click anywhere outside this menu, including on another menu
   document.addEventListener("click", (e) => {
-    if (!(e.target as Element).closest(".menu-group")) viewMenu.hidden = true;
+    if (!menu.parentElement!.contains(e.target as Node)) menu.hidden = true;
   });
+}
+
+function toggleDropdown(id: string): void {
+  const menu = document.getElementById(id);
+  if (menu) menu.hidden = !menu.hidden;
+}
+
+function initAttributesDialog(): void {
+  const dialog = document.getElementById("attributes-dialog") as HTMLDialogElement | null;
+  if (!dialog) return;
+  const form = dialog.querySelector("form")!;
+
+  dialog.addEventListener("close", () => {
+    if (dialog.returnValue !== "ok" || isDrawing()) return;
+    const width = Number((form.elements.namedItem("width") as HTMLInputElement).value);
+    const height = Number((form.elements.namedItem("height") as HTMLInputElement).value);
+    if (!width || !height) return;
+    resizeCanvas(width, height);
+  });
+}
+
+function openAttributesDialog(): void {
+  const dialog = document.getElementById("attributes-dialog") as HTMLDialogElement | null;
+  if (!dialog) return;
+  const form = dialog.querySelector("form")!;
+  (form.elements.namedItem("width") as HTMLInputElement).value = String(state.canvasWidth);
+  (form.elements.namedItem("height") as HTMLInputElement).value = String(state.canvasHeight);
+  dialog.returnValue = "";
+  // Drop any floating selection so its saved background, sized for the old
+  // canvas, cannot be drawn back after the resize
+  dropSelection();
+  dialog.showModal();
+}
+
+function handleImageAction(action: string | undefined): void {
+  if (action === "attributes") openAttributesDialog();
 }
 
 function onKeyDown(e: KeyboardEvent): void {
@@ -82,11 +126,12 @@ function handleMenuAction(menu: string | undefined): void {
         redo();
       }
       break;
-    case "view": {
-      const viewMenu = document.getElementById("view-menu");
-      if (viewMenu) viewMenu.hidden = !viewMenu.hidden;
+    case "view":
+      toggleDropdown("view-menu");
       break;
-    }
+    case "image":
+      toggleDropdown("image-menu");
+      break;
     case "help":
       alert("MSBPaint v0.1.0\n\nA very serious paint application.");
       break;

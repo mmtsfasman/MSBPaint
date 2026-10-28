@@ -1,4 +1,5 @@
 import { getContext } from "./canvas";
+import { setCanvasSize } from "./state";
 
 const MAX_STATES = 50;
 
@@ -51,10 +52,22 @@ export function saveSnapshot(): void {
 
 export function undo(): void {
   const snapshot = history.undo();
-  if (snapshot) getContext().putImageData(snapshot, 0, 0);
+  if (snapshot) restore(snapshot);
 }
 
 export function redo(): void {
   const snapshot = history.redo();
-  if (snapshot) getContext().putImageData(snapshot, 0, 0);
+  if (snapshot) restore(snapshot);
+}
+
+// A snapshot taken before a resize has the old dimensions, so the canvas
+// takes them back before the pixels are restored
+function restore(snapshot: ImageData): void {
+  const ctx = getContext();
+  if (ctx.canvas.width !== snapshot.width || ctx.canvas.height !== snapshot.height) {
+    ctx.canvas.width = snapshot.width;
+    ctx.canvas.height = snapshot.height;
+    setCanvasSize(snapshot.width, snapshot.height);
+  }
+  ctx.putImageData(snapshot, 0, 0);
 }

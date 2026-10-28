@@ -20,6 +20,58 @@
   transform-origin: 0 0;
 }
 
+/* Drag handle on the bottom-right corner for resizing the canvas */
+.canvas-resize-handle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 6px;
+  height: 6px;
+  background: #000080;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+/* Outline of the new size while the handle is dragged */
+.canvas-resize-preview {
+  display: none;
+  position: absolute;
+  pointer-events: none;
+  border: 1px dashed #000;
+}
+
+.attributes-dialog {
+  padding: 8px;
+  font-size: 12px;
+  background: #c0c0c0;
+  border: 1px solid #808080;
+  box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #fff;
+}
+
+.attributes-dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.attributes-dialog input {
+  width: 64px;
+}
+
+.attributes-title {
+  font-weight: bold;
+}
+
+.attributes-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.attributes-buttons button {
+  padding: 2px 12px;
+}
+
 /* Marching ants border around the active selection */
 .selection-marquee {
   display: none;

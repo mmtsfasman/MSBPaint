@@ -26,6 +26,12 @@
           <button class="menu-dropdown-item" data-action="zoom-reset">Reset Zoom</button>
         </div>
       </div>
+      <div class="menu-group">
+        <button class="menu-item" data-menu="image">Image</button>
+        <div class="menu-dropdown" id="image-menu" hidden>
+          <button class="menu-dropdown-item" data-action="attributes">Attributes...</button>
+        </div>
+      </div>
       <button class="menu-item" data-menu="help">Help</button>
     </header>
 
@@ -36,8 +42,22 @@
         <div class="canvas-wrapper" id="canvas-wrapper">
           <canvas id="paint-canvas"></canvas>
         </div>
+        <div class="canvas-resize-handle" id="canvas-resize-handle" title="Drag to resize"></div>
+        <div class="canvas-resize-preview" id="canvas-resize-preview"></div>
       </main>
     </div>
+
+    <dialog class="attributes-dialog" id="attributes-dialog">
+      <form method="dialog">
+        <p class="attributes-title">Attributes</p>
+        <label>Width <input type="number" name="width" min="1" max="4096" required /> px</label>
+        <label>Height <input type="number" name="height" min="1" max="4096" required /> px</label>
+        <div class="attributes-buttons">
+          <button value="ok">OK</button>
+          <button value="cancel" formnovalidate>Cancel</button>
+        </div>
+      </form>
+    </dialog>
 
     <footer class="bottom-bar">
       <div class="colour-palette" id="colour-palette"></div>
