@@ -1,4 +1,5 @@
-import { DrawTool, Point, AppState } from "../core/types";
+import { DrawTool, Point, AppState, DrawButton } from "../core/types";
+import { drawColour } from "../core/state";
 
 const FONT_SIZES = [
   { label: "Small", size: 12 },
@@ -12,7 +13,7 @@ interface TextOverlay {
   input: HTMLInputElement;
   point: Point;
   ctx: CanvasRenderingContext2D;
-  state: AppState;
+  colour: string;
 }
 
 let overlay: TextOverlay | null = null;
@@ -24,13 +25,13 @@ export const textTool: DrawTool = {
   label: "Text",
   icon: "A",
 
-  onPointerDown(ctx: CanvasRenderingContext2D, point: Point, state: AppState): void {
+  onPointerDown(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void {
     // Clicking away from an open text box confirms it
     if (overlay) {
       commit();
       return;
     }
-    overlay = createOverlay(ctx, point, state);
+    overlay = createOverlay(ctx, point, state, drawColour(state, button));
     justPlaced = true;
   },
 
@@ -46,7 +47,8 @@ export const textTool: DrawTool = {
 function createOverlay(
   ctx: CanvasRenderingContext2D,
   point: Point,
-  state: AppState
+  state: AppState,
+  colour: string
 ): TextOverlay {
   const container = document.createElement("div");
   container.className = "text-overlay";
@@ -60,7 +62,7 @@ function createOverlay(
   input.type = "text";
   input.className = "text-overlay-input";
   input.size = 1;
-  input.style.color = state.primaryColour;
+  input.style.color = colour;
   applyFontSize(input);
 
   const sizePicker = document.createElement("select");
@@ -94,7 +96,7 @@ function createOverlay(
   container.appendChild(sizePicker);
   ctx.canvas.parentElement!.appendChild(container);
 
-  return { container, input, point, ctx, state };
+  return { container, input, point, ctx, colour };
 }
 
 function applyFontSize(input: HTMLInputElement): void {
@@ -104,12 +106,12 @@ function applyFontSize(input: HTMLInputElement): void {
 
 function commit(): void {
   if (!overlay) return;
-  const { input, point, ctx, state } = overlay;
+  const { input, point, ctx, colour } = overlay;
   const text = input.value;
   close();
   if (!text) return;
 
-  ctx.fillStyle = state.primaryColour;
+  ctx.fillStyle = colour;
   ctx.font = `${fontSize}px ${FONT_FAMILY}`;
   ctx.textBaseline = "top";
   ctx.fillText(text, point.x, point.y);
