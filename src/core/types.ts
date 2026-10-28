@@ -15,6 +15,9 @@ export interface Point {
   y: number;
 }
 
+// Which mouse button is drawing: left draws with the primary colour, right with the secondary
+export type DrawButton = "primary" | "secondary";
+
 export interface AppState {
   activeTool: ToolType;
   primaryColour: string;
@@ -29,7 +32,7 @@ export interface DrawTool {
   name: ToolType;
   label: string;
   icon: string;
-  onPointerDown(ctx: CanvasRenderingContext2D, point: Point, state: AppState): void;
-  onPointerMove(ctx: CanvasRenderingContext2D, point: Point, state: AppState): void;
-  onPointerUp(ctx: CanvasRenderingContext2D, point: Point, state: AppState): void;
+  onPointerDown(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void;
+  onPointerMove(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void;
+  onPointerUp(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void;
 }
