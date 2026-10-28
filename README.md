@@ -31,6 +31,8 @@ Then open http://localhost:5173.
 - **File** menu exports as PNG
 - **Edit** menu clears the canvas
 - **Undo** / **Redo** menu items, or **Ctrl+Z** / **Ctrl+Shift+Z**, step through the last 50 canvas states
+- **Image** menu > **Attributes...** sets the canvas width and height (1 to 4096 px)
+- Drag the handle on the bottom-right corner of the canvas to resize it. Resizing keeps the drawing anchored at the top-left, crops it when shrinking and fills new space with the secondary colour; undo restores the previous size
 - **View** menu zooms in, zooms out or resets zoom (the zoom level is shown in the status bar)
 - **Ctrl + scroll wheel** over the canvas zooms in and out
 

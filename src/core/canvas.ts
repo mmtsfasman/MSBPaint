@@ -1,13 +1,17 @@
-import { state, subscribe, setZoom } from "./state";
+import { state, subscribe, setZoom, setCanvasSize } from "./state";
 import { Point } from "./types";
 import { getActiveTool } from "../tools/registry";
 import { saveSnapshot } from "./history";
+import { dropSelection } from "../tools/selection";
 
 let canvas: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
 let drawing = false;
 
 const ZOOM_LEVELS = [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8];
+
+export const MIN_CANVAS_SIZE = 1;
+export const MAX_CANVAS_SIZE = 4096;
 
 export function initCanvas(): void {
   canvas = document.getElementById("paint-canvas") as HTMLCanvasElement;
@@ -29,6 +33,8 @@ export function initCanvas(): void {
   const area = document.querySelector<HTMLElement>(".canvas-area");
   area?.addEventListener("wheel", onWheel, { passive: false });
 
+  initResizeHandle();
+
   applyZoom();
   subscribe(applyZoom);
 }
@@ -42,6 +48,68 @@ function applyZoom(): void {
     wrapper.style.width = `${canvas.width * state.zoom + 2}px`;
     wrapper.style.height = `${canvas.height * state.zoom + 2}px`;
   }
+  positionResizeHandle();
+}
+
+// The wrapper's 4px margin and 1px border put the canvas's bottom-right
+// corner at this offset inside the canvas area
+function canvasCorner(width: number, height: number): Point {
+  return { x: 5 + width * state.zoom, y: 5 + height * state.zoom };
+}
+
+function positionResizeHandle(): void {
+  const handle = document.getElementById("canvas-resize-handle");
+  if (!handle) return;
+  const corner = canvasCorner(canvas.width, canvas.height);
+  handle.style.left = `${corner.x}px`;
+  handle.style.top = `${corner.y}px`;
+}
+
+function initResizeHandle(): void {
+  const handle = document.getElementById("canvas-resize-handle");
+  const preview = document.getElementById("canvas-resize-preview");
+  if (!handle || !preview) return;
+
+  let start: { x: number; y: number; width: number; height: number } | null = null;
+
+  const sizeFor = (e: PointerEvent) => ({
+    width: clampCanvasSize(start!.width + (e.clientX - start!.x) / state.zoom),
+    height: clampCanvasSize(start!.height + (e.clientY - start!.y) / state.zoom),
+  });
+
+  handle.addEventListener("pointerdown", (e) => {
+    if (drawing) return;
+    e.preventDefault();
+    handle.setPointerCapture(e.pointerId);
+    start = { x: e.clientX, y: e.clientY, width: canvas.width, height: canvas.height };
+  });
+
+  handle.addEventListener("pointermove", (e) => {
+    if (!start) return;
+    const { width, height } = sizeFor(e);
+    const corner = canvasCorner(width, height);
+    preview.style.display = "block";
+    preview.style.left = "5px";
+    preview.style.top = "5px";
+    preview.style.width = `${corner.x - 5}px`;
+    preview.style.height = `${corner.y - 5}px`;
+    updateStatusCoords({ x: width, y: height });
+  });
+
+  const finish = (e: PointerEvent) => {
+    if (!start) return;
+    const { width, height } = sizeFor(e);
+    start = null;
+    preview.style.display = "none";
+    dropSelection();
+    resizeCanvas(width, height);
+  };
+  handle.addEventListener("pointerup", finish);
+  handle.addEventListener("pointercancel", (e) => {
+    start = null;
+    preview.style.display = "none";
+    handle.releasePointerCapture(e.pointerId);
+  });
 }
 
 function onWheel(e: WheelEvent): void {
@@ -120,5 +188,28 @@ export function isDrawing(): boolean {
 export function clearCanvas(): void {
   ctx.fillStyle = state.secondaryColour;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  saveSnapshot();
+}
+
+export function clampCanvasSize(size: number): number {
+  return Math.min(MAX_CANVAS_SIZE, Math.max(MIN_CANVAS_SIZE, Math.round(size)));
+}
+
+// Keeps the drawing anchored at the top-left corner. Shrinking crops it and
+// growing fills the new area with the secondary colour, like MS Paint.
+export function resizeCanvas(width: number, height: number): void {
+  width = clampCanvasSize(width);
+  height = clampCanvasSize(height);
+  if (width === canvas.width && height === canvas.height) return;
+
+  const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  // Setting the size clears the canvas and resets the context
+  canvas.width = width;
+  canvas.height = height;
+  ctx.fillStyle = state.secondaryColour;
+  ctx.fillRect(0, 0, width, height);
+  ctx.putImageData(image, 0, 0);
+
+  setCanvasSize(width, height);
   saveSnapshot();
 }
