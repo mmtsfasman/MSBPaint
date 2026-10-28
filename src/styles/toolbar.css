@@ -61,3 +61,50 @@
   background: #000;
   border-radius: 50%;
 }
+
+.shape-fill-picker {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #808080;
+}
+
+.shape-fill-option {
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.shape-fill-option:hover {
+  border-color: #fff #808080 #808080 #fff;
+}
+
+.shape-fill-option.active {
+  border-color: #808080 #fff #fff #808080;
+  background: #b0b0b0;
+}
+
+.shape-fill-swatch {
+  width: 24px;
+  height: 10px;
+  box-sizing: border-box;
+}
+
+.shape-fill-outline {
+  border: 1px solid #000;
+}
+
+.shape-fill-outline-fill {
+  border: 1px solid #000;
+  background: #808080;
+}
+
+.shape-fill-fill {
+  background: #808080;
+}

@@ -1,4 +1,4 @@
-import { AppState, DrawButton, ToolType } from "./types";
+import { AppState, DrawButton, ShapeFillMode, ToolType } from "./types";
 
 type Listener = () => void;
 
@@ -9,6 +9,7 @@ export const state: AppState = {
   primaryColour: "#000000",
   secondaryColour: "#ffffff",
   brushSize: 2,
+  shapeFillMode: "outline",
   canvasWidth: 800,
   canvasHeight: 600,
   zoom: 1,
@@ -16,6 +17,11 @@ export const state: AppState = {
 
 export function drawColour(state: AppState, button: DrawButton): string {
   return button === "secondary" ? state.secondaryColour : state.primaryColour;
+}
+
+// The colour a shape is filled with: the other one from the outline
+export function fillColour(state: AppState, button: DrawButton): string {
+  return button === "secondary" ? state.primaryColour : state.secondaryColour;
 }
 
 export function subscribe(fn: Listener): void {
@@ -39,6 +45,11 @@ export function setSecondaryColour(colour: string): void {
 
 export function setBrushSize(size: number): void {
   state.brushSize = size;
+  notify();
+}
+
+export function setShapeFillMode(mode: ShapeFillMode): void {
+  state.shapeFillMode = mode;
   notify();
 }
 

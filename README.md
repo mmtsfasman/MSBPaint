@@ -18,8 +18,8 @@ Then open http://localhost:5173.
 - Eraser — erases to the secondary colour
 - Fill bucket — flood fill
 - Line — click and drag to draw a line
-- Rectangle — click and drag to draw a rectangle outline
-- Ellipse — click and drag to draw an ellipse outline
+- Rectangle — click and drag to draw a rectangle (pick outline, outline + fill or fill only in the toolbar; outline uses the primary colour, fill the secondary; right drag swaps them)
+- Ellipse — click and drag to draw an ellipse (same fill modes as the rectangle)
 - Eyedropper — pick a colour from the canvas
 - Select — drag to select a region, drag inside it to move it, Ctrl+C / Ctrl+V to copy and paste, Delete to clear it to the secondary colour (on a moved or pasted selection, Delete removes the floating pixels and leaves what was underneath)
 - Text — click to place text, pick a size, press Enter or click away to stamp it

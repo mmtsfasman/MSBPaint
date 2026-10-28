@@ -1,5 +1,5 @@
 import { DrawTool, Point, AppState, DrawButton } from "../core/types";
-import { drawColour } from "../core/state";
+import { drawColour, fillColour } from "../core/state";
 
 let startPoint: Point | null = null;
 let savedImageData: ImageData | null = null;
@@ -17,32 +17,37 @@ export const rectangleTool: DrawTool = {
   onPointerMove(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void {
     if (!startPoint || !savedImageData) return;
     ctx.putImageData(savedImageData, 0, 0);
-    drawRect(ctx, startPoint, point, drawColour(state, button), state.brushSize);
+    drawRect(ctx, startPoint, point, state, button);
   },
 
   onPointerUp(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void {
     if (!startPoint) return;
     if (savedImageData) ctx.putImageData(savedImageData, 0, 0);
-    drawRect(ctx, startPoint, point, drawColour(state, button), state.brushSize);
+    drawRect(ctx, startPoint, point, state, button);
     startPoint = null;
     savedImageData = null;
   },
 };
 
-// TODO: support filled rectangles (outline + fill, fill only)
 function drawRect(
   ctx: CanvasRenderingContext2D,
   from: Point,
   to: Point,
-  colour: string,
-  size: number
+  state: AppState,
+  button: DrawButton
 ): void {
-  ctx.strokeStyle = colour;
-  ctx.lineWidth = size;
-  ctx.strokeRect(
-    from.x,
-    from.y,
-    to.x - from.x,
-    to.y - from.y
-  );
+  const x = from.x;
+  const y = from.y;
+  const w = to.x - from.x;
+  const h = to.y - from.y;
+
+  if (state.shapeFillMode !== "outline") {
+    ctx.fillStyle = fillColour(state, button);
+    ctx.fillRect(x, y, w, h);
+  }
+  if (state.shapeFillMode !== "fill") {
+    ctx.strokeStyle = drawColour(state, button);
+    ctx.lineWidth = state.brushSize;
+    ctx.strokeRect(x, y, w, h);
+  }
 }

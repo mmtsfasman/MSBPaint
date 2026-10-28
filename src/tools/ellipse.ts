@@ -1,5 +1,5 @@
 import { DrawTool, Point, AppState, DrawButton } from "../core/types";
-import { drawColour } from "../core/state";
+import { drawColour, fillColour } from "../core/state";
 
 let startPoint: Point | null = null;
 let savedImageData: ImageData | null = null;
@@ -17,34 +17,39 @@ export const ellipseTool: DrawTool = {
   onPointerMove(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void {
     if (!startPoint || !savedImageData) return;
     ctx.putImageData(savedImageData, 0, 0);
-    drawEllipse(ctx, startPoint, point, drawColour(state, button), state.brushSize);
+    drawEllipse(ctx, startPoint, point, state, button);
   },
 
   onPointerUp(ctx: CanvasRenderingContext2D, point: Point, state: AppState, button: DrawButton): void {
     if (!startPoint) return;
     if (savedImageData) ctx.putImageData(savedImageData, 0, 0);
-    drawEllipse(ctx, startPoint, point, drawColour(state, button), state.brushSize);
+    drawEllipse(ctx, startPoint, point, state, button);
     startPoint = null;
     savedImageData = null;
   },
 };
 
-// TODO: support filled ellipses
 function drawEllipse(
   ctx: CanvasRenderingContext2D,
   from: Point,
   to: Point,
-  colour: string,
-  size: number
+  state: AppState,
+  button: DrawButton
 ): void {
   const cx = (from.x + to.x) / 2;
   const cy = (from.y + to.y) / 2;
   const rx = Math.abs(to.x - from.x) / 2;
   const ry = Math.abs(to.y - from.y) / 2;
 
-  ctx.strokeStyle = colour;
-  ctx.lineWidth = size;
   ctx.beginPath();
   ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-  ctx.stroke();
+  if (state.shapeFillMode !== "outline") {
+    ctx.fillStyle = fillColour(state, button);
+    ctx.fill();
+  }
+  if (state.shapeFillMode !== "fill") {
+    ctx.strokeStyle = drawColour(state, button);
+    ctx.lineWidth = state.brushSize;
+    ctx.stroke();
+  }
 }

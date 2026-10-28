@@ -1,7 +1,14 @@
-import { state, setTool, setBrushSize, subscribe } from "../core/state";
+import { state, setTool, setBrushSize, setShapeFillMode, subscribe } from "../core/state";
+import { ShapeFillMode } from "../core/types";
 import { getAllTools } from "../tools/registry";
 
 const BRUSH_SIZES = [1, 2, 4, 8];
+
+const SHAPE_FILL_MODES: { mode: ShapeFillMode; label: string }[] = [
+  { mode: "outline", label: "Outline" },
+  { mode: "outline-fill", label: "Outline and fill" },
+  { mode: "fill", label: "Fill" },
+];
 
 export function initToolbar(): void {
   const container = document.getElementById("toolbar")!;
@@ -40,4 +47,24 @@ function render(container: HTMLElement): void {
   }
 
   container.appendChild(sizeContainer);
+
+  if (state.activeTool === "rectangle" || state.activeTool === "ellipse") {
+    const modeContainer = document.createElement("div");
+    modeContainer.className = "shape-fill-picker";
+
+    for (const { mode, label } of SHAPE_FILL_MODES) {
+      const btn = document.createElement("button");
+      btn.className = "shape-fill-option" + (state.shapeFillMode === mode ? " active" : "");
+      btn.title = label;
+
+      const swatch = document.createElement("span");
+      swatch.className = `shape-fill-swatch shape-fill-${mode}`;
+      btn.appendChild(swatch);
+
+      btn.addEventListener("click", () => setShapeFillMode(mode));
+      modeContainer.appendChild(btn);
+    }
+
+    container.appendChild(modeContainer);
+  }
 }
